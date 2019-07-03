@@ -1,2 +1,2 @@
 # auto_pts
-Auto prepare, test, submit
+**Auto** **P**repare, **T**est, and **S**ubmit
