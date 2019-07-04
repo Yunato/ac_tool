@@ -6,7 +6,7 @@ def say_hello():
 
 
 def print_directory():
-    directory = os.listdir()
+    directory = os.listdir(os.getcwd())
     print(directory)
 
 
