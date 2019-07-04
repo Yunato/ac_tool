@@ -1,6 +1,15 @@
-def sayHello():
+import os
+
+
+def say_hello():
     print("Hello, World!")
 
 
+def print_directory():
+    directory = os.listdir()
+    print(directory)
+
+
 if __name__ == '__main__':
-    sayHello()
+    say_hello()
+    print_directory()
