@@ -5,8 +5,19 @@ import shutil
 current_directory = ""
 
 
-def say_hello():
-    print("Hello, World!")
+def get_absolute_path(path):
+    global current_directory
+    directories = path.split("/")
+    rtn_directory = current_directory
+    for directory in directories:
+        if directory == "":
+            continue
+        elif directory == "..":
+            last_index = current_directory.rfind("/")
+            rtn_directory = rtn_directory[:last_index]
+        else:
+            rtn_directory += "/" + directory
+    return rtn_directory
 
 
 def println(msg):
