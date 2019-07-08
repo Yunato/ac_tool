@@ -4,7 +4,8 @@ import logging
 
 
 # logging.basicConfig(level=logging.DEBUG)
-current_directory = ""
+current_directory = os.getcwd()
+__mode = True
 
 
 def get_absolute_path(path):
@@ -15,7 +16,7 @@ def get_absolute_path(path):
         if directory == "":
             continue
         elif directory == "..":
-            last_index = current_directory.rfind("/")
+            last_index = rtn_directory.rfind("/")
             rtn_directory = rtn_directory[:last_index]
         else:
             rtn_directory += "/" + directory
@@ -46,8 +47,7 @@ def make_directory(dir_name):
     new_directory = current_directory + "/" + dir_name
     if not os.path.isdir(new_directory):
         os.mkdir(new_directory)
-        println(new_directory)
-    else:
+    elif __mode:
         println(f"A directory with name \"{dir_name}\" already exists at {current_directory}.")
 
 
@@ -57,7 +57,7 @@ def change_directory(dir_name):
     next_directory = current_directory + "/" + dir_name
     if os.path.isdir(next_directory):
         current_directory = next_directory
-    else:
+    elif __mode:
         println(f"No such directory: {dir_name}")
 
 
@@ -68,12 +68,12 @@ def copy_directory(source_dir, target_dir):
     absolute_target_path = get_absolute_path(target_dir)
     if os.path.isdir(absolute_source_path):
         shutil.copytree(absolute_source_path, absolute_target_path)
-    else:
+    elif __mode:
         println(f"No such directory: {absolute_source_path}")
 
 
 if __name__ == '__main__':
-    current_directory = os.getcwd()
+    __mode = True
     while True:
         cmd = input().split()
         if cmd[0] == "ls":
