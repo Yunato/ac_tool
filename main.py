@@ -48,17 +48,29 @@ def login_service():
     }
 
     url_login = "https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fabc131"
-    response = session.get(url_login)
-    soup = BeautifulSoup(response.text, 'html.parser')
+    login_page = session.get(url_login)
+    soup = BeautifulSoup(login_page.text, "html.parser")
     csrf_token = soup.find(attrs={"name": "csrf_token"}).get("value")
     login_info["csrf_token"] = csrf_token
-    res = session.post(url_login, data=login_info)
+    top_page = session.post(url_login, data=login_info)
     try:
-        res.raise_for_status()
+        top_page.raise_for_status()
     except requests.exceptions.HTTPError:
         print("Can't login, so you mistake your username or password")
         sys.exit()
-    print(res.text)
+    return top_page.text
+
+
+def create_directory_of_question(html):
+    questions = []
+    soup = BeautifulSoup(html, "html.parser")
+    table = soup.find_all("table")[0]
+    for tr in table.findAll("tr"):
+        tds = tr.select("td")
+        if len(tds) == 2:
+            questions.append(tds[0].text)
+    for question in questions:
+        directory.copy_directory("../../template", f"./{question}")
 
 
 if __name__ == '__main__':
@@ -72,10 +84,9 @@ if __name__ == '__main__':
         contest_name = extract_contest_name(contest_url)
         if contest_name is not None:
             break
-    # TODO Plus, Get number and name of questions
 
     make_and_change_directory(contest_name)
-    directory.print_working_directory()
-    directory.copy_directory("../../template", "./QA")
+    response = login_service()
+    create_directory_of_question(response)
+
     # TODO Rename file name when copying files from template
-    login_service()
