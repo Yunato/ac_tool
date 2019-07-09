@@ -1,2 +1,4 @@
 # Ignore IDEA files
 .idea/
+venv/
+__pycache__
