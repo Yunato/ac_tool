@@ -48,7 +48,7 @@ def make_directory(dir_name):
     if not os.path.isdir(new_directory):
         os.mkdir(new_directory)
     elif __mode:
-        println(f"A directory with name \"{dir_name}\" already exists at {current_directory}.")
+        println(f"A directory with name \"{dir_name}\" already exists at {current_directory}")
 
 
 def change_directory(dir_name):
@@ -70,6 +70,17 @@ def copy_directory(source_dir, target_dir):
         shutil.copytree(absolute_source_path, absolute_target_path)
     elif __mode:
         println(f"No such directory: {absolute_source_path}")
+
+
+def check_file(file_name):
+    global current_directory
+    logging.debug(f"exist {file_name}")
+    target_path = current_directory + "/" + file_name
+    if os.path.isfile(target_path):
+        return True
+    else:
+        println(f"A file with name \"{file_name}\" not found")
+        return False
 
 
 if __name__ == '__main__':
@@ -95,6 +106,11 @@ if __name__ == '__main__':
                 copy_directory(cmd[1], cmd[2])
             else:
                 println(f"usage: cp source_directory target_directory")
+        elif cmd[0] == "exist":
+            if len(cmd) == 2:
+                check_file(cmd[1])
+            else:
+                println(f"usage: exist file")
         elif cmd[0] == "exit":
             break
         else:
