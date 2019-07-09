@@ -1,6 +1,23 @@
-import sys
-import directory
+import collections as cl
+import json
 import re
+import requests
+import sys
+
+import directory
+
+
+username = ""
+password = ""
+
+
+def read_user_info():
+    global username, password
+    if not directory.check_file("login_info.json"):
+        sys.exit()
+    json_data = json.load(open("login_info.json", "r"))
+    username = json_data["username"]
+    password = json_data["password"]
 
 
 def make_and_change_directory(dir_name):
@@ -24,8 +41,8 @@ def extract_contest_name(url):
 
 
 if __name__ == '__main__':
+    read_user_info()
     make_and_change_directory("AtCoder")
-    contest_url = ""
     while True:
         print('Please input url of contest (ex. https://atcoder.jp/contests/xxx)')
         contest_url = input("Use 'exit' to exit\n")

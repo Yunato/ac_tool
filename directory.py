@@ -48,7 +48,7 @@ def make_directory(dir_name):
     if not os.path.isdir(new_directory):
         os.mkdir(new_directory)
     elif __mode:
-        println(f"A directory with name \"{dir_name}\" already exists at {current_directory}")
+        logging.debug(f"A directory with name \"{dir_name}\" already exists at {current_directory}")
 
 
 def change_directory(dir_name):
