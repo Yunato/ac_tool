@@ -28,10 +28,12 @@ def println(msg):
     print(output + "\n")
 
 
-def list_directory():
+def list_content(allow=True):
     logging.debug("ls")
     directories = os.listdir(current_directory)
-    println(directories)
+    if allow:
+        println(directories)
+    return directories
 
 
 def print_working_directory():
@@ -77,6 +79,18 @@ def copy_directory(source_dir, target_dir):
         return False
 
 
+def rename_file(source_file, target_file):
+    logging.debug(f"mv {source_file} {target_file}")
+    absolute_source_path = get_absolute_path(source_file)
+    absolute_target_path = get_absolute_path(target_file)
+    if os.path.isfile(absolute_source_path):
+        os.rename(absolute_source_path, absolute_target_path)
+        return True
+    elif __mode:
+        println(f"No such file: {absolute_source_path}")
+        return False
+
+
 def check_file(file_name):
     global current_directory
     logging.debug(f"exist {file_name}")
@@ -93,7 +107,7 @@ if __name__ == '__main__':
     while True:
         cmd = input().split()
         if cmd[0] == "ls":
-            list_directory()
+            list_content()
         elif cmd[0] == "pwd":
             print_working_directory()
         elif cmd[0] == "mkdir":

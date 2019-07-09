@@ -73,6 +73,16 @@ def create_directory_of_question(html):
         directory.copy_directory("../../template", f"./{question}")
 
 
+def rename_answer_files_each_directory():
+    for sub_dir in directory.list_content(False):
+        directory.change_directory(sub_dir)
+        question_name = sub_dir.lower()
+        for file in directory.list_content(False):
+            extension = file[file.rfind("."):]
+            directory.rename_file(file, question_name + extension)
+        directory.change_directory("../")
+
+
 if __name__ == '__main__':
     read_user_info()
     make_and_change_directory("AtCoder")
@@ -88,5 +98,6 @@ if __name__ == '__main__':
     make_and_change_directory(contest_name)
     response = login_service()
     create_directory_of_question(response)
+    rename_answer_files_each_directory()
 
     # TODO Rename file name when copying files from template
