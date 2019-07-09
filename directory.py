@@ -66,10 +66,15 @@ def copy_directory(source_dir, target_dir):
     logging.debug(f"cp {source_dir} {target_dir}")
     absolute_source_path = get_absolute_path(source_dir)
     absolute_target_path = get_absolute_path(target_dir)
-    if os.path.isdir(absolute_source_path):
+    if os.path.isdir(absolute_target_path):
+        print(f"A directory with name \"{target_dir}\" already exists at {current_directory}")
+        return True
+    elif os.path.isdir(absolute_source_path):
         shutil.copytree(absolute_source_path, absolute_target_path)
+        return True
     elif __mode:
         println(f"No such directory: {absolute_source_path}")
+        return False
 
 
 def check_file(file_name):

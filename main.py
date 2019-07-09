@@ -1,4 +1,4 @@
-import collections as cl
+from bs4 import BeautifulSoup
 import json
 import re
 import requests
@@ -40,6 +40,27 @@ def extract_contest_name(url):
         return match_alpha.group(2)
 
 
+def login_service():
+    session = requests.session()
+    login_info = {
+        "username": username,
+        "password": password
+    }
+
+    url_login = "https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fabc131"
+    response = session.get(url_login)
+    soup = BeautifulSoup(response.text, 'html.parser')
+    csrf_token = soup.find(attrs={"name": "csrf_token"}).get("value")
+    login_info["csrf_token"] = csrf_token
+    res = session.post(url_login, data=login_info)
+    try:
+        res.raise_for_status()
+    except requests.exceptions.HTTPError:
+        print("Can't login, so you mistake your username or password")
+        sys.exit()
+    print(res.text)
+
+
 if __name__ == '__main__':
     read_user_info()
     make_and_change_directory("AtCoder")
@@ -57,3 +78,4 @@ if __name__ == '__main__':
     directory.print_working_directory()
     directory.copy_directory("../../template", "./QA")
     # TODO Rename file name when copying files from template
+    login_service()
