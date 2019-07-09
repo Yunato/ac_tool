@@ -1,7 +1,6 @@
+import sys
 import directory
-
-
-__require_keyword = "atcoder.jp"
+import re
 
 
 def make_and_change_directory(dir_name):
@@ -9,28 +8,32 @@ def make_and_change_directory(dir_name):
     directory.change_directory(dir_name)
 
 
-def validate_url(url):
-    if __require_keyword in url:
-        return True
-    else:
-        return False
-
-
-# TODO  Correspond to below format: https://xxx.contest.atcoder.jp/
 def extract_contest_name(url):
-    separated = url.split("/")
-    return separated[4]
+    pattern_alpha = r"^(http|https)://([\w-]+).contest.atcoder.(jp|jp/)?$"
+    pattern_beta = r"^(http|https)://atcoder.jp/contests/([\w-]+)?(/)?$"
+    match_alpha = re.search(pattern_alpha, url)
+    match_beta = re.search(pattern_beta, url)
+
+    if match_alpha is None and match_beta is None:
+        print("This URL is incorrect\n")
+        return None
+    if match_beta is not None:
+        return match_beta.group(2)
+    if match_alpha is not None:
+        return match_alpha.group(2)
 
 
 if __name__ == '__main__':
     make_and_change_directory("AtCoder")
     contest_url = ""
-    # TODO Exit
-    while not validate_url(contest_url):
-        print('Please input url of contest (ex. https://atcoder.jp/contests/xxx)\n')
-        contest_url = input("'Use exit() to exit'\n")
-    contest_name = extract_contest_name(contest_url)
-    print(contest_name)
+    while True:
+        print('Please input url of contest (ex. https://atcoder.jp/contests/xxx)')
+        contest_url = input("Use 'exit' to exit\n")
+        if contest_url == "exit":
+            sys.exit()
+        contest_name = extract_contest_name(contest_url)
+        if contest_name is not None:
+            break
     # TODO Plus, Get number and name of questions
 
     make_and_change_directory(contest_name)
