@@ -74,10 +74,10 @@ def create_directory_of_question(html):
 
 
 def rename_answer_files_each_directory():
-    for sub_dir in directory.list_content(False):
+    for sub_dir in directory.list_content():
         directory.change_directory(sub_dir)
         question_name = sub_dir.lower()
-        for file in directory.list_content(False):
+        for file in directory.list_content():
             extension = file[file.rfind("."):]
             directory.rename_file(file, question_name + extension)
         directory.change_directory("../")
