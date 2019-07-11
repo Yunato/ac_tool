@@ -28,18 +28,15 @@ def println(msg):
     print(output + "\n")
 
 
-def list_content(allow=True):
+def list_content():
     logging.debug("ls")
     directories = os.listdir(current_directory)
-    if allow:
-        println(directories)
     return directories
 
 
 def print_working_directory():
     global current_directory
     logging.debug("pwd")
-    # current_directory = os.getcwd()
     println(current_directory)
 
 
@@ -60,7 +57,7 @@ def change_directory(dir_name):
     if os.path.isdir(next_directory):
         current_directory = next_directory
     elif __mode:
-        println(f"No such directory: {dir_name}")
+        logging.debug(f"No such directory: {dir_name}")
 
 
 def copy_directory(source_dir, target_dir):
@@ -107,7 +104,7 @@ if __name__ == '__main__':
     while True:
         cmd = input().split()
         if cmd[0] == "ls":
-            list_content()
+            println(list_content())
         elif cmd[0] == "pwd":
             print_working_directory()
         elif cmd[0] == "mkdir":

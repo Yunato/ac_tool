@@ -6,4 +6,4 @@ venv/
 __pycache__
 
 # User Info
-login_info.json
+/login_info.json
