@@ -62,7 +62,8 @@ if __name__ == '__main__':
         if contest_name is not None:
             break
     make_and_change_directory(contest_name)
-    response = connection.login_service()
-    create_directory_of_question(response)
+    # connection.login_service()
+    top_page_info = connection.get_page_info(contest_url)
+    create_directory_of_question(top_page_info)
     rename_answer_files_each_directory()
 

@@ -35,6 +35,11 @@ def login_service():
     return top_page.text
 
 
+def get_page_info(url):
+    page_info = requests.get(url)
+    return page_info.text
+
+
 def get_question_name(html):
     questions = []
     soup = BeautifulSoup(html, "html.parser")
