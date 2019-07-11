@@ -43,8 +43,16 @@ def get_page_info(url):
 def get_question_name(html):
     questions = []
     soup = BeautifulSoup(html, "html.parser")
-    table = soup.find_all("table")[0]
-    for tr in table.findAll("tr"):
+    tables = soup.find_all("table")
+    index = -1
+    for i in range(len(tables)):
+        th = tables[i].findAll("th")
+        if "Task" in th[0]:
+            index = i
+            break
+    if index == -1:
+        return questions
+    for tr in tables[index].findAll("tr"):
         tds = tr.select("td")
         if len(tds) == 2:
             questions.append(tds[0].text)
