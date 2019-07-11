@@ -1,23 +1,17 @@
-from bs4 import BeautifulSoup
 import json
 import re
-import requests
 import sys
 
+import connection
 import directory
 
 
-username = ""
-password = ""
-
-
 def read_user_info():
-    global username, password
     if not directory.check_file("login_info.json"):
+        print("Not found login_info.json")
         sys.exit()
     json_data = json.load(open("login_info.json", "r"))
-    username = json_data["username"]
-    password = json_data["password"]
+    connection.set_user_info(json_data["username"], json_data["password"])
 
 
 def make_and_change_directory(dir_name):
@@ -40,35 +34,8 @@ def extract_contest_name(url):
         return match_alpha.group(2)
 
 
-def login_service():
-    session = requests.session()
-    login_info = {
-        "username": username,
-        "password": password
-    }
-
-    url_login = "https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fabc131"
-    login_page = session.get(url_login)
-    soup = BeautifulSoup(login_page.text, "html.parser")
-    csrf_token = soup.find(attrs={"name": "csrf_token"}).get("value")
-    login_info["csrf_token"] = csrf_token
-    top_page = session.post(url_login, data=login_info)
-    try:
-        top_page.raise_for_status()
-    except requests.exceptions.HTTPError:
-        print("Can't login, so you mistake your username or password")
-        sys.exit()
-    return top_page.text
-
-
 def create_directory_of_question(html):
-    questions = []
-    soup = BeautifulSoup(html, "html.parser")
-    table = soup.find_all("table")[0]
-    for tr in table.findAll("tr"):
-        tds = tr.select("td")
-        if len(tds) == 2:
-            questions.append(tds[0].text)
+    questions = connection.get_question_name(html)
     for question in questions:
         directory.copy_directory("../../template", f"./{question}")
 
@@ -94,10 +61,8 @@ if __name__ == '__main__':
         contest_name = extract_contest_name(contest_url)
         if contest_name is not None:
             break
-
     make_and_change_directory(contest_name)
-    response = login_service()
+    response = connection.login_service()
     create_directory_of_question(response)
     rename_answer_files_each_directory()
 
-    # TODO Rename file name when copying files from template
