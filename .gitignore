@@ -1,6 +1,9 @@
 # Ignore IDEA files
 .idea/
 
+# Igonre VSCode files
+.vscode/
+
 # Python files
 venv/
 __pycache__
