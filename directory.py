@@ -38,6 +38,7 @@ def print_working_directory():
     global current_directory
     logging.debug("pwd")
     println(current_directory)
+    return current_directory
 
 
 def make_directory(dir_name):

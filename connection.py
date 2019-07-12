@@ -30,7 +30,7 @@ def login_service():
         top_page.raise_for_status()
     except requests.exceptions.HTTPError:
         print("Can't login, so you mistake your username or password")
-        sys.exit()
+        return None
     print(top_page.text)
     return top_page.text
 
