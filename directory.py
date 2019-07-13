@@ -5,7 +5,7 @@ import logging
 
 # logging.basicConfig(level=logging.DEBUG)
 current_directory = os.getcwd()
-__mode = True
+__mode = False
 
 
 def get_absolute_path(path):
@@ -54,7 +54,7 @@ def make_directory(dir_name):
 def change_directory(dir_name):
     global current_directory
     logging.debug(f"cd {dir_name}")
-    next_directory = current_directory + "/" + dir_name
+    next_directory = get_absolute_path(dir_name)
     if os.path.isdir(next_directory):
         current_directory = next_directory
     elif __mode:
