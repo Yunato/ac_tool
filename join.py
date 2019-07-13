@@ -29,27 +29,26 @@ def extract_contest_name(url):
 
 
 def create_directory_of_question(contest_url):
-    html = connection.get_page_info(contest_url)
-    questions = get_question_name(html)
+    top_page = connection.get_page_text(contest_url)
+    soup = BeautifulSoup(top_page, "html.parser")
+    list_items = soup.findAll("li")
+    list_item = [item for item in list_items if "Tasks" in item.getText()]
+    href = list_item[0].select("a")[0].get("href")
+    tasks_url = contest_url + href[href.rfind("/"):]
+
+    questions = get_question_name(tasks_url)
     for question in questions:
         directory.copy_directory("../../template", f"./{question}")
 
 
-def get_question_name(html):
+def get_question_name(tasks_url):
     questions = []
+    html = connection.get_page_text(tasks_url)
     soup = BeautifulSoup(html, "html.parser")
-    tables = soup.find_all("table")
-    index = -1
-    for i in range(len(tables)):
-        th = tables[i].findAll("th")
-        if "Task" in th[0]:
-            index = i
-            break
-    if index == -1:
-        return questions
-    for tr in tables[index].findAll("tr"):
+    table = soup.select("table")[0]
+    for tr in table.findAll("tr"):
         tds = tr.select("td")
-        if len(tds) == 2:
+        if tds:
             questions.append(tds[0].text)
     return questions
 

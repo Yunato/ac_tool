@@ -13,8 +13,10 @@ def read_user_info():
 
 
 def run():
-    return read_user_info()
-    # connection.login_service()
+    if not read_user_info():
+        return False
+    connection.login_service()
+    return True
 
 
 if __name__ == "__main__":
