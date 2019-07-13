@@ -1,20 +1,11 @@
-import json
+from bs4 import BeautifulSoup
 import re
 
 import connection
 import directory
 
 
-root_path = directory.print_working_directory()
-
-
-def read_user_info():
-    if not directory.check_file("login_info.json"):
-        print("Not found login_info.json")
-        return False
-    json_data = json.load(open("login_info.json", "r"))
-    connection.set_user_info(json_data["username"], json_data["password"])
-    return True
+root_path = directory.current_directory
 
 
 def make_and_change_directory(dir_name):
@@ -37,10 +28,30 @@ def extract_contest_name(url):
         return match_alpha.group(2)
 
 
-def create_directory_of_question(html):
-    questions = connection.get_question_name(html)
+def create_directory_of_question(contest_url):
+    html = connection.get_page_info(contest_url)
+    questions = get_question_name(html)
     for question in questions:
         directory.copy_directory("../../template", f"./{question}")
+
+
+def get_question_name(html):
+    questions = []
+    soup = BeautifulSoup(html, "html.parser")
+    tables = soup.find_all("table")
+    index = -1
+    for i in range(len(tables)):
+        th = tables[i].findAll("th")
+        if "Task" in th[0]:
+            index = i
+            break
+    if index == -1:
+        return questions
+    for tr in tables[index].findAll("tr"):
+        tds = tr.select("td")
+        if len(tds) == 2:
+            questions.append(tds[0].text)
+    return questions
 
 
 def rename_answer_files_each_directory():
@@ -58,24 +69,17 @@ def reset():
 
 
 def run():
-    if not read_user_info():
-        return False
     make_and_change_directory("AtCoder")
-    try:
-        while True:
-            print('Please input url of contest (ex. https://atcoder.jp/contests/xxx)')
-            contest_url = input("Use 'exit' to exit\n")
-            if contest_url == "exit":
-                return False
-            contest_name = extract_contest_name(contest_url)
-            if contest_name is not None:
-                break
-    except KeyboardInterrupt:
-        return False
+    while True:
+        print('Please input url of contest (ex. https://atcoder.jp/contests/xxx)')
+        contest_url = input("Use 'exit' to exit\n")
+        if contest_url == "exit":
+            return False
+        contest_name = extract_contest_name(contest_url)
+        if contest_name is not None:
+            break
     make_and_change_directory(contest_name)
-    # connection.login_service()
-    top_page_info = connection.get_page_info(contest_url)
-    create_directory_of_question(top_page_info)
+    create_directory_of_question(contest_url)
     rename_answer_files_each_directory()
     print(f"Successful in joining at {contest_name}!!\n")
     return True
