@@ -1,4 +1,6 @@
 from bs4 import BeautifulSoup
+import os
+import pathlib
 import re
 
 import connection
@@ -103,6 +105,23 @@ def rename_answer_files_each_directory():
         directory.change_directory("../")
 
 
+def create_hidden_file():
+    file_name = f"{directory.current_directory}/.info_stamp"
+    if not os.path.exists(file_name):
+        stamp = get_stamp_from_source_files()
+        with open(file_name, "w") as f:
+            f.write(str(stamp.stat().st_mtime))
+
+
+def get_stamp_from_source_files():
+    p = pathlib.Path(directory.current_directory)
+    stamp = None
+    for file in p.glob("**/*[!.txt]"):
+        if file.is_file() and (stamp is None or stamp.stat().st_mtime < file.stat().st_mtime):
+            stamp = file
+    return stamp
+
+
 def reset():
     directory.current_directory = root_path
 
@@ -122,6 +141,7 @@ def run():
     make_and_change_directory(contest_name)
     create_directory_of_question(contest_url)
     rename_answer_files_each_directory()
+    create_hidden_file()
     print(f"Successful in joining at {contest_name}!!\n")
     return True
 
