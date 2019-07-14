@@ -1,5 +1,4 @@
-import directory
-import connection
+from libs import directory, connection
 import json
 
 

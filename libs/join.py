@@ -3,9 +3,7 @@ import os
 import pathlib
 import re
 
-import connection
-import directory
-
+from libs import directory, connection
 
 root_path = directory.current_directory
 

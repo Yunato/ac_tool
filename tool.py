@@ -1,8 +1,6 @@
 import sys
 
-import login
-import join
-
+from libs import login, join
 
 hasJoined = False
 
