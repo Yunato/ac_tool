@@ -1,4 +1,6 @@
 from bs4 import BeautifulSoup
+import collections as cl
+import json
 import os
 import pathlib
 import re
@@ -95,20 +97,26 @@ def create_example_files(file_info):
 
 def rename_answer_files_each_directory():
     for sub_dir in directory.list_content():
+        if os.path.isfile(f"{directory.current_directory}/{sub_dir}"):
+            continue
         directory.change_directory(sub_dir)
         question_name = sub_dir.lower()
         for file in directory.list_content():
+            if not os.path.isfile(f"{directory.current_directory}/{file}"):
+                continue
             extension = file[file.rfind("."):]
             directory.rename_file(file, question_name + extension)
         directory.change_directory("../")
 
 
-def create_hidden_file():
-    file_name = f"{directory.current_directory}/.info_stamp"
+def create_info_json():
+    file_name = f"{directory.current_directory}/info.json"
     if not os.path.exists(file_name):
         stamp = get_stamp_from_source_files()
         with open(file_name, "w") as f:
-            f.write(str(stamp.stat().st_mtime))
+            data = cl.OrderedDict()
+            data["stamp"] = stamp
+            json.dump(data, f, indent=2)
 
 
 def get_stamp_from_source_files():
@@ -117,7 +125,7 @@ def get_stamp_from_source_files():
     for file in p.glob("**/*[!.txt]"):
         if file.is_file() and (stamp is None or stamp.stat().st_mtime < file.stat().st_mtime):
             stamp = file
-    return stamp
+    return stamp.stat().st_mtime
 
 
 def reset():
@@ -139,7 +147,7 @@ def run():
     make_and_change_directory(contest_name)
     create_directory_of_question(contest_url)
     rename_answer_files_each_directory()
-    create_hidden_file()
+    create_info_json()
     print(f"Successful in joining at {contest_name}!!\n")
     return True
 

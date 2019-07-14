@@ -1,6 +1,6 @@
 import sys
 
-from libs import login, join
+from libs import login, join, build
 
 hasJoined = False
 
@@ -13,8 +13,7 @@ def perform_joining():
 
 
 def perform_building():
-    print("build")
-    # build.run()
+    return build.run()
 
 
 def perform_testing():
@@ -53,9 +52,7 @@ if __name__ == "__main__":
             elif cmd == "exit":
                 sys.exit()
             else:
-                perform_building()
-                perform_testing()
-                perform_submitting()
+                perform_building() and perform_testing() and perform_submitting()
             print()
     except KeyboardInterrupt:
         sys.exit()
