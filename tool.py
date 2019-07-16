@@ -52,7 +52,7 @@ if __name__ == "__main__":
             elif cmd == "exit":
                 sys.exit()
             else:
-                perform_building() and perform_testing() and perform_submitting()
+                perform_building() is not None and perform_testing() and perform_submitting()
             print()
     except KeyboardInterrupt:
         sys.exit()

@@ -1,3 +1,4 @@
+import collections as cl
 import json
 import os
 import pathlib
@@ -20,8 +21,10 @@ def check_updated_newest_file(newest_file):
     old_stamp = read_info_json()
     new_stamp = newest_file.stat().st_mtime
     if old_stamp == new_stamp:
+        print("<<< Warning >>>")
         print("The newest source file is already built last time")
         print("So, You didn't change any source files")
+        print("If you change any source files, please save them at your editor")
         return False
     return True
 
@@ -34,6 +37,15 @@ def read_info_json():
     return 0
 
 
+def update_info_json(file):
+    stamp = file.stat().st_mtime
+    file_name = f"{directory.current_directory}/info.json"
+    with open(file_name, "w") as f:
+        data = cl.OrderedDict()
+        data["stamp"] = stamp
+        json.dump(data, f, indent=2)
+
+
 def build(name, ext):
     if ext == ".cpp":
         try:
@@ -41,19 +53,20 @@ def build(name, ext):
             subprocess.check_call(args)
         except subprocess.CalledProcessError:
             print("Failed in building")
-            return False
+            return None
         print("Successful in building")
-        return True
+        return {name, ext}
     if ext == ".py" or ext == ".rb":
-        return True
-    return False
+        return {name, ext}
+    return None
 
 
 def run(has_checked=False):
     newest_file = get_newest_source_file()
     if not has_checked:
         if not check_updated_newest_file(newest_file):
-            return False
+            return None
+    update_info_json(newest_file)
     file_name = str(newest_file.resolve())
     extension = file_name[file_name.rfind("."):]
     return build(name=file_name, ext=extension)
