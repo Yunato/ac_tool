@@ -1,18 +1,29 @@
 import json
 import os
 import pathlib
+import subprocess
 
 from libs import directory
 
 
-def get_stamp_from_source_files():
+def get_newest_source_file():
     p = pathlib.Path(directory.current_directory)
-    stamp = None
+    newest_file = None
     for file in p.glob("**/*[!.txt|!.json]"):
         if not file.is_dir() and file.is_file() and \
-                (stamp is None or stamp.stat().st_mtime < file.stat().st_mtime):
-            stamp = file
-    return stamp.stat().st_mtime
+                (newest_file is None or newest_file.stat().st_mtime < file.stat().st_mtime):
+            newest_file = file
+    return newest_file
+
+
+def check_updated_newest_file(newest_file):
+    old_stamp = read_info_json()
+    new_stamp = newest_file.stat().st_mtime
+    if old_stamp == new_stamp:
+        print("The newest source file is already built last time")
+        print("So, You didn't change any source files")
+        return False
+    return True
 
 
 def read_info_json():
@@ -23,15 +34,29 @@ def read_info_json():
     return 0
 
 
-def run(has_checked=False):
-    if not has_checked:
-        old_stamp = read_info_json()
-        new_stamp = get_stamp_from_source_files()
-        if old_stamp == new_stamp:
-            print("The newest source file is already built last time")
-            print("So, You didn't change any source files")
+def build(name, ext):
+    if ext == ".cpp":
+        try:
+            args = ["g++", "-o", name[:name.rfind(".")], name]
+            subprocess.check_call(args)
+        except subprocess.CalledProcessError:
+            print("Failed in building")
             return False
+        print("Successful in building")
         return True
+    if ext == ".py" or ext == ".rb":
+        return True
+    return False
+
+
+def run(has_checked=False):
+    newest_file = get_newest_source_file()
+    if not has_checked:
+        if not check_updated_newest_file(newest_file):
+            return False
+    file_name = str(newest_file.resolve())
+    extension = file_name[file_name.rfind("."):]
+    return build(name=file_name, ext=extension)
 
 
 if __name__ == "__main__":
