@@ -35,10 +35,16 @@ def test_for_one_sample(ex_input_file_name, ex_output_file_name):
     if cmd is None:
         return False
 
+    ex_input = ""
     with open(ex_input_file_name) as f:
-        ex_input = f.read()
+        for line in f.readlines():
+            if line != "\n":
+                ex_input += line
+    ex_output = ""
     with open(ex_output_file_name) as f:
-        ex_output = f.read()
+        for line in f.readlines():
+            if line != "\n":
+                ex_output += line
 
     ex_input = ex_input.encode("UTF-8")
     cmd.stdin.write(ex_input)

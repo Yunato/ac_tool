@@ -50,13 +50,12 @@ def build(name, ext):
     if ext == ".cpp":
         try:
             output_name = name[:name.rfind(".")]
-            print(f"Executable file: {output_name}")
+            print(f"[Executable file]: {output_name}")
             args = ["g++", "-o", output_name, name]
             subprocess.check_call(args)
         except subprocess.CalledProcessError:
             print("Failed in building")
             return None
-        print("Successful in building")
         return [name, ext]
     if ext == ".py" or ext == ".rb":
         return [name, ext]
@@ -71,6 +70,7 @@ def run(has_checked=False):
     update_info_json(newest_file)
     file_name = str(newest_file.resolve())
     extension = file_name[file_name.rfind("."):]
+    print(file_name[file_name.rfind("/"):])
     return build(name=file_name, ext=extension)
 
 

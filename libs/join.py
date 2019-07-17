@@ -76,12 +76,18 @@ def get_root_url(contest_url):
 def extract_example(html):
     examples = []
     soup = BeautifulSoup(html, "html.parser")
-    sections = soup.findAll("section")
-    for section in sections:
-        h3 = section.select("h3")
-        pre = section.select("pre")
-        if "Sample" in h3[0].text:
-            examples.append([h3[0].text, pre[0].text])
+    divs = soup.findAll("div")
+    for div in divs:
+        h3 = div.select("h3")
+        pre = div.select("pre")
+        if len(h3) > 0 and len(pre) > 0 and "例" in h3[0].text:
+            file_name = h3[0].text
+            file_content = pre[0].text
+            if "入力例" in file_name:
+                file_name = file_name.replace("入力例", "Sample_Input")
+            if "出力例" in file_name:
+                file_name = file_name.replace("出力例", "Sample_Output")
+            examples.append([file_name, file_content])
     return examples
 
 

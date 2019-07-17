@@ -44,7 +44,8 @@ if __name__ == "__main__":
             print("- exit   : This tool will be exited")
             print("If other command is inputted or if empty, run Build & Test & Submit")
             cmd = input()
-            print()
+            if cmd != "":
+                print()
 
             cmd = cmd.lower()
             if cmd == "change":
