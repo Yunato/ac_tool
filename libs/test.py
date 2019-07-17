@@ -33,6 +33,36 @@ def test_for_one_sample(ex_input_file_name, ex_output_file_name):
     if cmd is None:
         return False
 
+    with open(ex_input_file_name) as f:
+        ex_input = f.read()
+    with open(ex_output_file_name) as f:
+        ex_output = f.read()
+
+    ex_input = ex_input.encode("UTF-8")
+    cmd.stdin.write(ex_input)
+    try:
+        cmd.stdin.flush()
+    except BrokenPipeError:
+        print(BrokenPipeError)
+        pass
+    output = cmd.stdout.readlines()
+    output = byte_to_str(output)
+    output = ''.join(output)
+    if output == ex_output:
+        return True
+
+    name = str(ex_input_file_name)
+    print("Output:")
+    print(output)
+    print("\nExpected")
+    print(ex_output)
+    print(f"\nFailed: Sample{name[name.rfind('_'):name.rfind('.')]}\n")
+    return False
+
+
+def byte_to_str(byte_list):
+    return [byte.decode("UTF-8") for byte in byte_list]
+
 
 def run(file_info):
     global test_file_info
