@@ -23,8 +23,10 @@ def get_command():
     extension = test_file_info[1]
     if extension == ".cpp":
         return Popen([name[:name.rfind(".")]], shell=True, stdout=PIPE, stdin=PIPE)
-    if extension == ".py" or extension == ".rb":
-        return Popen([name], shell=True, stdout=PIPE, stdin=PIPE)
+    elif extension == ".py":
+        return Popen([f"python3 {name}"], shell=True, stdout=PIPE, stdin=PIPE)
+    elif extension == ".rb":
+        return Popen([f"ruby {name}"], shell=True, stdout=PIPE, stdin=PIPE)
     return None
 
 
