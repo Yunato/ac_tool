@@ -55,9 +55,9 @@ def build(name, ext):
             print("Failed in building")
             return None
         print("Successful in building")
-        return {name, ext}
+        return [name, ext]
     if ext == ".py" or ext == ".rb":
-        return {name, ext}
+        return [name, ext]
     return None
 
 

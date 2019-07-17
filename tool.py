@@ -1,6 +1,6 @@
 import sys
 
-from libs import login, join, build
+from libs import login, join, build, test
 
 hasJoined = False
 
@@ -16,9 +16,8 @@ def perform_building():
     return build.run()
 
 
-def perform_testing():
-    print("test")
-    # test.run()
+def perform_testing(file_info):
+    test.run(file_info)
 
 
 def perform_submitting():
@@ -39,6 +38,7 @@ if __name__ == "__main__":
     try:
         while True:
             perform_joining()
+            print()
             print("Please input any of the following commands")
             print("- change : You can select a contest again")
             print("- exit   : This tool will be exited")
@@ -52,7 +52,9 @@ if __name__ == "__main__":
             elif cmd == "exit":
                 sys.exit()
             else:
-                perform_building() is not None and perform_testing() and perform_submitting()
-            print()
+                file_info = perform_building()
+                if file_info is None or not perform_testing(file_info):
+                    continue
+                perform_submitting()
     except KeyboardInterrupt:
         sys.exit()
