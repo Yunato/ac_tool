@@ -10,7 +10,7 @@ from libs import directory
 def get_newest_source_file():
     p = pathlib.Path(directory.current_directory)
     newest_file = None
-    for file in p.glob("**/*[!.txt|!.json]"):
+    for file in p.glob("**/*.*[!.txt|!.json]"):
         if not file.is_dir() and file.is_file() and \
                 (newest_file is None or newest_file.stat().st_mtime < file.stat().st_mtime):
             newest_file = file
@@ -49,7 +49,9 @@ def update_info_json(file):
 def build(name, ext):
     if ext == ".cpp":
         try:
-            args = ["g++", "-o", name[:name.rfind(".")], name]
+            output_name = name[:name.rfind(".")]
+            print(f"Executable file: {output_name}")
+            args = ["g++", "-o", output_name, name]
             subprocess.check_call(args)
         except subprocess.CalledProcessError:
             print("Failed in building")

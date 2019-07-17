@@ -52,8 +52,8 @@ if __name__ == "__main__":
             elif cmd == "exit":
                 sys.exit()
             else:
-                file_info = perform_building()
-                if file_info is None or not perform_testing(file_info):
+                exec_file_info = perform_building()
+                if exec_file_info is None or not perform_testing(exec_file_info):
                     continue
                 perform_submitting()
     except KeyboardInterrupt:
