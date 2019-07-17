@@ -12,6 +12,24 @@ def get_command(name, ext):
     return None
 
 
+def test(cmd, file_name):
+    question = file_name[file_name.rfind("/") + 1:file_name.rfind(".")].upper()
+    print(question)
+    print(search_files(question, "Input"))
+    print(search_files(question, "Output"))
+
+
+def search_example_files(question, condition):
+    directory.change_directory(question)
+    p = pathlib.Path(directory.current_directory)
+    files = []
+    for file in p.glob("test/*.txt"):
+        if condition in file.name:
+            files.append(file)
+    directory.change_directory("../")
+    return files
+
+
 def run(file_info):
     if file_info is None:
         return False
@@ -20,6 +38,7 @@ def run(file_info):
     cmd = get_command(name=file_name, ext=extension)
     if cmd is None:
         return False
+    test(cmd, file_name)
     return True
 
 
