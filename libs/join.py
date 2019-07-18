@@ -144,7 +144,7 @@ def run():
         print('Please input url of contest (ex. https://atcoder.jp/contests/xxx)')
         contest_url = input("Use 'exit' to exit\n")
         if contest_url == "exit":
-            return False
+            return None
         contest_name = extract_contest_name(contest_url)
         if contest_name is not None:
             break
@@ -155,7 +155,7 @@ def run():
     rename_answer_files_each_directory()
     create_info_json()
     print(f"Successful in joining at {contest_name}!!\n")
-    return True
+    return contest_url
 
 
 if __name__ == '__main__':

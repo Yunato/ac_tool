@@ -14,7 +14,7 @@ def set_user_info(name, pwd):
 
 
 def login_service():
-    login_url = "https://atcoder.jp/login?continue=https%3A%2F%2Fatcoder.jp%2Fcontests%2Fabc131"
+    login_url = "https://atcoder.jp/login"
     login_info = {
         "username": username,
         "password": password

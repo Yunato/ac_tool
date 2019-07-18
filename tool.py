@@ -1,15 +1,16 @@
 import sys
 
-from libs import login, join, build, test
+from libs import login, join, build, test, submit
 
-hasJoined = False
+contest_url = ""
 
 
 def perform_joining():
-    global hasJoined
-    if not hasJoined and not join.run():
-        sys.exit()
-    hasJoined = True
+    global contest_url
+    if not contest_url:
+        contest_url = join.run()
+        if contest_url is None:
+            sys.exit()
 
 
 def perform_building():
@@ -17,19 +18,19 @@ def perform_building():
 
 
 def perform_testing(file_info):
-    test.run(file_info)
+    return test.run(file_info)
 
 
-def perform_submitting():
-    print("submit")
-    # submit.run()
+def perform_submitting(file_info):
+    global contest_url
+    submit.run(contest_url, file_info)
 
 
 def perform_change_contest():
-    global hasJoined
+    global contest_url
     print("Change contest")
     join.reset()
-    hasJoined = False
+    contest_url = ""
 
 
 if __name__ == "__main__":
@@ -56,6 +57,6 @@ if __name__ == "__main__":
                 exec_file_info = perform_building()
                 if exec_file_info is None or not perform_testing(exec_file_info):
                     continue
-                perform_submitting()
+                perform_submitting(exec_file_info)
     except KeyboardInterrupt:
         sys.exit()
