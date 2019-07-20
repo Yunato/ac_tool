@@ -14,7 +14,8 @@ def read_user_info():
 def run():
     if not read_user_info():
         return False
-    connection.login_service()
+    connection.login_alpha_service()
+    connection.login_beta_service()
     return True
 
 

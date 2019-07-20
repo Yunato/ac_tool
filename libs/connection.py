@@ -13,7 +13,22 @@ def set_user_info(name, pwd):
     password = pwd
 
 
-def login_service():
+def login_alpha_service():
+    login_url = "https://abc001.contest.atcoder.jp/login"
+    login_info = {
+        "name": username,
+        "password": password
+    }
+
+    top_page = session.post(login_url, data=login_info)
+    try:
+        top_page.raise_for_status()
+    except requests.exceptions.HTTPError:
+        print("Can't login, so you mistake your username or password")
+        return None
+
+
+def login_beta_service():
     login_url = "https://atcoder.jp/login"
     login_info = {
         "username": username,
