@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import re
 
 from libs import connection
 
@@ -50,14 +51,32 @@ def get_lang_id(html, file_info):
             return option["value"]
     return None
 
-    #     if ".cpp" == extension and :
-    #         options = select.findAll("option")
-    #         break
-    # if options is None:
-    #     return None
-    # for option in options:
-    #     if option.text.find(question_name) == 0:
-    #         return option["value"]
+
+def get_source_code(file_info):
+    file_name = file_info[0]
+    extension = file_info[1]
+    if extension == ".cpp":
+        comment_symbol = r"//"
+    elif extension == ".py":
+        comment_symbol = r"#"
+    elif extension == ".rb":
+        comment_symbol = r"#"
+    else:
+        return None
+
+    source_code = ""
+    pattern = r"^[\s\t]?(" + comment_symbol + r"|\n$)"
+    has_continued_blank = False
+    with open(file_name) as f:
+        for line in f.readlines():
+            search = re.search(pattern, line)
+            if search is None:
+                source_code += line
+                has_continued_blank = False
+            elif not has_continued_blank:
+                source_code += "\n"
+                has_continued_blank = True
+    return source_code
 
 
 def run(contest_url, file_info):
@@ -66,11 +85,11 @@ def run(contest_url, file_info):
     submit_url = get_submit_page_url(contest_url)
     submit_html = connection.get_page_text(submit_url)
     task_id = get_task_id(submit_html, file_info)
-    print(task_id)
     lang_id = get_lang_id(submit_html, file_info)
-    print(lang_id)
+    source_code = get_source_code(file_info)
+    print(source_code)
     return True
 
 
 if __name__ == "__main__":
-    run()
+    run("", "")
