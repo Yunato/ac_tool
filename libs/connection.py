@@ -88,9 +88,22 @@ def submit_alpha_service(contest_url, html, task_id, lang_id, source_code):
         return "Failed"
 
 
-def submit_alpha_service(task_id, lang_id, source_code):
-    return
+def submit_beta_service(contest_url, html, task_id, lang_id, source_code):
+    submit_info = {
+        "data.TaskScreenName": task_id,
+        "data.LanguageId": lang_id,
+        "sourceCode": source_code
+    }
 
-
-def submit_beta_service(task_id, lang_id, source_code):
-    return
+    soup = BeautifulSoup(html, "html.parser")
+    csrf_token = soup.find(attrs={"name": "csrf_token"}).get("value")
+    submit_info["csrf_token"] = csrf_token
+    result = session.post(contest_url, data=submit_info)
+    try:
+        result.raise_for_status()
+        if result.status_code == 200:
+            return "Success"
+        else:
+            return "Failed"
+    except requests.exceptions.HTTPError:
+        return "Failed"
