@@ -53,19 +53,39 @@ def get_page_text(url):
     return page_info.text
 
 
-def submit(url, task_id, lang_id, source_code):
-    pattern_alpha = r"^(http|https)://([\w-]+).contest.atcoder.(jp|jp/)?$"
-    pattern_beta = r"^(http|https)://atcoder.jp/contests/([\w-]+)?(/)?$"
-    match_alpha = re.search(pattern_alpha, url)
-    match_beta = re.search(pattern_beta, url)
+def submit(contest_url, html, task_id, lang_id, source_code):
+    pattern_alpha = r"^(http|https)://([\w-]+).contest.atcoder.(jp|jp/)?"
+    pattern_beta = r"^(http|https)://atcoder.jp/contests/([\w-]+)?(/)?"
+    match_alpha = re.search(pattern_alpha, contest_url)
+    match_beta = re.search(pattern_beta, contest_url)
 
     if match_alpha is None and match_beta is None:
         return "Failed"
     if match_alpha is not None:
-        submit_alpha_service(task_id, lang_id, source_code)
+        return submit_alpha_service(contest_url, html, task_id, lang_id, source_code)
     if match_beta is not None:
-        submit_beta_service(task_id, lang_id, source_code)
-    return "Success"
+        return submit_beta_service(contest_url, html, task_id, lang_id, source_code)
+
+
+def submit_alpha_service(contest_url, html, task_id, lang_id, source_code):
+    submit_info = {
+        "task_id": task_id,
+        "language_id_731": lang_id,
+        "source_code": source_code
+    }
+
+    soup = BeautifulSoup(html, "html.parser")
+    session_id = soup.find(attrs={"name": "__session"}).get("value")
+    submit_info["__session"] = session_id
+    result = session.post(contest_url, data=submit_info)
+    try:
+        result.raise_for_status()
+        if result.status_code == 200:
+            return "Success"
+        else:
+            return "Failed"
+    except requests.exceptions.HTTPError:
+        return "Failed"
 
 
 def submit_alpha_service(task_id, lang_id, source_code):

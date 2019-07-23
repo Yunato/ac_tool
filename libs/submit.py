@@ -81,14 +81,15 @@ def get_source_code(file_info):
 
 def run(contest_url, file_info):
     if not contest_url:
-        return False
+        return
     submit_url = get_submit_page_url(contest_url)
     submit_html = connection.get_page_text(submit_url)
     task_id = get_task_id(submit_html, file_info)
     lang_id = get_lang_id(submit_html, file_info)
     source_code = get_source_code(file_info)
-    connection.submit(contest_url, task_id, lang_id, source_code)
-    return True
+    status = connection.submit(submit_url, submit_html, task_id, lang_id, source_code)
+    print(status)
+    return
 
 
 if __name__ == "__main__":
