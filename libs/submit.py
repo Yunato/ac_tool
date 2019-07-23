@@ -29,6 +29,37 @@ def get_task_id(html, file_info):
             return option["value"]
 
 
+def get_lang_id(html, file_info):
+    extension = file_info[1]
+    soup = BeautifulSoup(html, "html.parser")
+    divs = soup.findAll("div")
+    options = None
+    for div in divs:
+        label = div.findAll("label")
+        if len(label) != 0 and "Language" in label[0].text:
+            options = div.findAll("option")
+    if options is None:
+        return None
+    for option in options:
+        lang = option.text
+        if extension == ".cpp" and ("C++" in lang or "C&#43;&#43;" in lang) and "GCC" in lang:
+            return option["value"]
+        elif extension == ".py" and "Python3" in lang:
+            return option["value"]
+        elif extension == ".rb" and "Ruby" in lang:
+            return option["value"]
+    return None
+
+    #     if ".cpp" == extension and :
+    #         options = select.findAll("option")
+    #         break
+    # if options is None:
+    #     return None
+    # for option in options:
+    #     if option.text.find(question_name) == 0:
+    #         return option["value"]
+
+
 def run(contest_url, file_info):
     if not contest_url:
         return False
@@ -36,6 +67,8 @@ def run(contest_url, file_info):
     submit_html = connection.get_page_text(submit_url)
     task_id = get_task_id(submit_html, file_info)
     print(task_id)
+    lang_id = get_lang_id(submit_html, file_info)
+    print(lang_id)
     return True
 
 
