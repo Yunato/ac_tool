@@ -87,7 +87,7 @@ def run(contest_url, file_info):
     task_id = get_task_id(submit_html, file_info)
     lang_id = get_lang_id(submit_html, file_info)
     source_code = get_source_code(file_info)
-    print(source_code)
+    connection.submit(contest_url, task_id, lang_id, source_code)
     return True
 
 

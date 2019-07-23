@@ -1,4 +1,5 @@
 from bs4 import BeautifulSoup
+import re
 import requests
 
 
@@ -50,3 +51,26 @@ def login_beta_service():
 def get_page_text(url):
     page_info = session.get(url)
     return page_info.text
+
+
+def submit(url, task_id, lang_id, source_code):
+    pattern_alpha = r"^(http|https)://([\w-]+).contest.atcoder.(jp|jp/)?$"
+    pattern_beta = r"^(http|https)://atcoder.jp/contests/([\w-]+)?(/)?$"
+    match_alpha = re.search(pattern_alpha, url)
+    match_beta = re.search(pattern_beta, url)
+
+    if match_alpha is None and match_beta is None:
+        return "Failed"
+    if match_alpha is not None:
+        submit_alpha_service(task_id, lang_id, source_code)
+    if match_beta is not None:
+        submit_beta_service(task_id, lang_id, source_code)
+    return "Success"
+
+
+def submit_alpha_service(task_id, lang_id, source_code):
+    return
+
+
+def submit_beta_service(task_id, lang_id, source_code):
+    return
