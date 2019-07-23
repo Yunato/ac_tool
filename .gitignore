@@ -10,3 +10,9 @@ __pycache__
 
 # User Info
 /login_info.json
+
+# Created Directory
+/AtCoder
+
+# Template files
+/template
