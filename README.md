@@ -1,2 +1,2 @@
-# auto_pts
-**Auto** **P**repare, **T**est, and **S**ubmit
+# ac_tool
+This tool can prepare, compile, test, and submit automatically for AtCoder.
