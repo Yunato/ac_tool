@@ -49,16 +49,21 @@ def update_info_json(file):
 def build(name, ext):
     if ext == ".cpp":
         try:
-            output_name = name[:name.rfind(".")]
+            tmp_name = name[:name.rfind(".")]
+            question_name = tmp_name[tmp_name.rfind("/") + 1:].upper()
+            directory.make_directory(f"{question_name}/output")
+            insert_point = tmp_name.rfind("/")
+            output_name = tmp_name[:insert_point] + "/output" + tmp_name[insert_point:]
             print(f"[Executable file]: {output_name}")
             args = ["g++", "-o", output_name, name]
             subprocess.check_call(args)
         except subprocess.CalledProcessError:
             print("Failed in building")
             return None
-        return [name, ext]
+        return [name, ext, output_name]
     if ext == ".py" or ext == ".rb":
-        return [name, ext]
+        output_name = name
+        return [name, ext, output_name]
     return None
 
 
