@@ -34,9 +34,9 @@ def perform_change_contest():
 
 
 if __name__ == "__main__":
-    if not login.run():
-        sys.exit()
     try:
+        if not login.run():
+            sys.exit()
         while True:
             perform_joining()
             print()

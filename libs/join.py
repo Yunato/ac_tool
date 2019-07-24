@@ -35,7 +35,9 @@ def create_directory_of_question(contest_url):
     tasks_html = connection.get_page_text(tasks_url)
     questions = get_ques_name_and_url(tasks_html)
     root = get_root_url(contest_url)
+    directory.check_exist("../../template")
     for question in questions:
+        directory.make_directory(f"{question[0]}")
         directory.copy_directory("../../template", f"./{question[0]}")
         directory.change_directory(question[0])
         question_html = connection.get_page_text(f"{root}{question[1]}")
@@ -131,7 +133,10 @@ def get_stamp_from_source_files():
     for file in p.glob("**/*[!.txt]"):
         if file.is_file() and (stamp is None or stamp.stat().st_mtime < file.stat().st_mtime):
             stamp = file
-    return stamp.stat().st_mtime
+    if stamp is not None:
+        return stamp.stat().st_mtime
+    else:
+        return 0
 
 
 def reset():

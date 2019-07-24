@@ -100,6 +100,18 @@ def check_file(file_name):
         return False
 
 
+def check_exist(path):
+    global current_directory
+    logging.debug(f"exist {path}")
+    target_path = current_directory + "/" + path
+    if os.path.exists(target_path):
+        return True
+    else:
+        target_path = os.path.abspath(target_path)
+        println(f"[Warning] \"{target_path}\" not found")
+        return False
+
+
 if __name__ == '__main__':
     __mode = True
     while True:

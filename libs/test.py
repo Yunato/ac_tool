@@ -19,10 +19,10 @@ def search_example_files(question, condition):
 
 
 def get_command():
-    name = test_file_info[0]
+    name = test_file_info[2]
     extension = test_file_info[1]
     if extension == ".cpp":
-        return Popen([name[:name.rfind(".")]], shell=True, stdout=PIPE, stdin=PIPE)
+        return Popen(name, shell=True, stdout=PIPE, stdin=PIPE)
     elif extension == ".py":
         return Popen([f"python3 {name}"], shell=True, stdout=PIPE, stdin=PIPE)
     elif extension == ".rb":
