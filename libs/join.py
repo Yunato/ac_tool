@@ -15,6 +15,15 @@ def make_and_change_directory(dir_name):
     directory.change_directory(dir_name)
 
 
+def create_ignore_file():
+    if not os.path.exists("./AtCoder/.gitignore"):
+        with open("./AtCoder/.gitignore", "w") as f:
+            f.write("test/\n")
+            f.write("output/\n")
+    else:
+        return
+
+
 def extract_contest_name(url):
     pattern_alpha = r"^(http|https)://([\w-]+).contest.atcoder.(jp|jp/)?$"
     pattern_beta = r"^(http|https)://atcoder.jp/contests/([\w-]+)?(/)?$"
@@ -145,6 +154,7 @@ def reset():
 
 def run():
     make_and_change_directory("AtCoder")
+    create_ignore_file()
     while True:
         print('Please input url of contest (ex. https://atcoder.jp/contests/xxx)')
         contest_url = input("Use 'exit' to exit\n")
