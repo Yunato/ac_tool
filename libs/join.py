@@ -44,9 +44,9 @@ def create_directory_of_question(contest_url):
     tasks_html = connection.get_page_text(tasks_url)
     questions = get_ques_name_and_url(tasks_html)
     root = get_root_url(contest_url)
-    directory.check_exist("../../template")
+    if not directory.check_exist("../../template"):
+        return
     for question in questions:
-        directory.make_directory(f"{question[0]}")
         directory.copy_directory("../../template", f"./{question[0]}")
         directory.change_directory(question[0])
         question_html = connection.get_page_text(f"{root}{question[1]}")
